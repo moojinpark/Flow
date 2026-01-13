@@ -1,0 +1,1238 @@
+import React, { useState } from 'react';
+import { ChevronDown, ChevronRight, FileText, Stethoscope, ClipboardList } from 'lucide-react';
+
+const MedicalClerkingGuide = () => {
+  const [expandedSections, setExpandedSections] = useState({});
+  const [activeTab, setActiveTab] = useState('template');
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const systemsData = {
+    gastro: {
+      title: "GASTROENTEROLOGY",
+      diseases: {
+        "Peptic Ulcer Disease": {
+          hpc: [
+            "Site: Epigastric pain (duodenal vs gastric)",
+            "Onset: When did it start? Sudden or gradual?",
+            "Character: Burning, gnawing, or sharp?",
+            "Radiation: To the back? (suggests posterior penetration)",
+            "Associated: Nausea, vomiting (coffee-ground?), hematemesis, melena",
+            "Timing: Relation to meals (before meals = duodenal; after meals = gastric)",
+            "Exacerbating: Spicy foods, NSAIDs, alcohol, stress",
+            "Severity: Scale 1-10, affecting daily activities?",
+            "ALARM: Weight loss, anorexia, progressive dysphagia, anemia"
+          ],
+          ros: "Jaundice, change in bowel habits, abdominal distension, fever",
+          pmh: "Previous ulcers, H. pylori treatment, GERD",
+          dh: "NSAIDs, aspirin, steroids, anticoagulants",
+          sh: "Smoking (increases risk), alcohol, diet (spicy foods)",
+          examination: [
+            "General: Pallor (anemia), signs of dehydration",
+            "Vitals: Tachycardia, hypotension (if bleeding)",
+            "Abdomen: Epigastric tenderness, guarding, rigidity (perforation), succussion splash",
+            "PR: Melena on digital rectal examination"
+          ]
+        },
+        "Chronic Liver Disease/Cirrhosis": {
+          hpc: [
+            "Abdominal distension: Duration, progressive?",
+            "Jaundice: Yellow eyes, dark urine, pale stools",
+            "Bleeding: Hematemesis, melena, epistaxis, gum bleeding, easy bruising",
+            "Confusion: Asterixis, altered consciousness (hepatic encephalopathy)",
+            "Swelling: Ankle edema, facial puffiness",
+            "Associated: Pruritus, loss of libido, gynaecomastia"
+          ],
+          ros: "Fever, weight loss, weakness, anorexia",
+          pmh: "Hepatitis B/C, previous jaundice, blood transfusions, alcohol history",
+          dh: "Hepatotoxic drugs, herbal medications, IV drug use",
+          sh: "Alcohol (quantify: units/day, duration), tattoos, sexual history, family history of liver disease",
+          examination: [
+            "General: Jaundice, pallor, fetor hepaticus, flapping tremor",
+            "Hands: Palmar erythema, Dupuytren's contracture, clubbing, leukonychia",
+            "Face: Parotid enlargement, spider naevi (upper body)",
+            "Chest: Gynaecomastia, sparse axillary/chest hair",
+            "Abdomen: Hepatomegaly (early) or small liver (late), splenomegaly, ascites (shifting dullness, fluid thrill), caput medusae, dilated veins",
+            "Lower limbs: Pitting edema, testicular atrophy"
+          ]
+        },
+        "Acute Gastroenteritis": {
+          hpc: [
+            "Diarrhea: Frequency, consistency (watery/bloody), mucus, pus",
+            "Vomiting: Frequency, content, blood?",
+            "Onset: Sudden or gradual? Duration?",
+            "Associated: Fever, abdominal cramps, tenesmus",
+            "Dehydration: Reduced urine output, thirst, dizziness",
+            "Recent exposure: Food history, travel, contacts with similar symptoms"
+          ],
+          ros: "Headache, myalgia, arthralgia",
+          pmh: "Previous episodes, inflammatory bowel disease, immunosuppression",
+          dh: "Recent antibiotics, immunosuppressants",
+          sh: "Recent travel, food intake (last 48 hours), water source, occupation",
+          examination: [
+            "General: Dehydration status (skin turgor, mucous membranes, sunken eyes)",
+            "Vitals: Temperature, BP (postural drop), tachycardia",
+            "Abdomen: Tenderness (generalized or localized), hyperactive bowel sounds",
+            "Hydration: Capillary refill time, urine output"
+          ]
+        },
+        "Inflammatory Bowel Disease": {
+          hpc: [
+            "Diarrhea: Bloody (UC) vs non-bloody (Crohn's), frequency, nocturnal?",
+            "Abdominal pain: Site (RIF in Crohn's), cramping, relation to defecation",
+            "Constitutional: Weight loss, fever, night sweats",
+            "Extra-intestinal: Joint pains, eye problems (uveitis), skin rashes (erythema nodosum, pyoderma gangrenosum)",
+            "Perianal: Fistulas, abscesses, skin tags (Crohn's)"
+          ],
+          ros: "Mouth ulcers, liver symptoms",
+          pmh: "Previous flares, surgeries, bowel resections",
+          dh: "Steroids, immunosuppressants (azathioprine, biologics)",
+          sh: "Smoking (worsens Crohn's, protective in UC), family history",
+          examination: [
+            "General: Cachexia, pallor, clubbing, oral ulcers",
+            "Eyes: Episcleritis, uveitis",
+            "Skin: Erythema nodosum (shins), pyoderma gangrenosum",
+            "Joints: Arthritis (large joints)",
+            "Abdomen: Tenderness (especially RIF), mass, fistulas",
+            "Perianal: Tags, fissures, fistulas"
+          ]
+        }
+      }
+    },
+    nephro: {
+      title: "NEPHROLOGY",
+      diseases: {
+        "Acute Kidney Injury": {
+          hpc: [
+            "Urine output: Oliguria, anuria, polyuria (duration, volume)",
+            "Symptoms of uremia: Nausea, vomiting, confusion, seizures, pruritis",
+            "Fluid overload: Swelling (face, legs), breathlessness, orthopnea",
+            "Precipitants: Recent illness, diarrhea/vomiting, medications, procedures",
+            "Pain: Loin pain (suggests obstruction or infection)"
+          ],
+          ros: "Hematuria, dysuria, fever",
+          pmh: "CKD, diabetes, hypertension, heart failure, recent surgery",
+          dh: "NSAIDs, ACE-I/ARBs, diuretics, antibiotics, contrast agents, chemotherapy",
+          sh: "Fluid intake, recent dehydration",
+          examination: [
+            "General: Uremic fetor, confusion, asterixis, pericardial rub",
+            "Vitals: BP (hyper/hypotension), JVP (fluid status)",
+            "Volume status: Edema (periorbital, sacral, pedal), lung crepitations, ascites",
+            "Abdomen: Palpable bladder (retention), enlarged kidneys (PKD), renal bruits",
+            "CVS: Signs of fluid overload or dehydration"
+          ]
+        },
+        "Chronic Kidney Disease": {
+          hpc: [
+            "Symptoms of uremia: Fatigue, nausea, anorexia, pruritis, poor concentration",
+            "Bone disease: Bone pain, fractures",
+            "Anemia symptoms: Weakness, breathlessness, pallor",
+            "Neuropathy: Numbness, restless legs",
+            "Fluid: Swelling, breathlessness"
+          ],
+          ros: "Hematuria, nocturia, polyuria",
+          pmh: "Diabetes, hypertension, glomerulonephritis, PKD, recurrent UTIs",
+          dh: "Antihypertensives, diabetic medications, phosphate binders, EPO",
+          sh: "Dialysis access, family history of kidney disease",
+          examination: [
+            "General: Pallor, uremic frost, pigmentation, excoriation marks",
+            "Hands: AV fistula (thrill, bruit), peripheral neuropathy",
+            "Eyes: Band keratopathy, pale conjunctiva",
+            "CVS: Hypertension, pericardial rub, signs of fluid overload",
+            "Abdomen: Palpable kidneys (PKD), Tenckhoff catheter",
+            "Bones: Bone tenderness"
+          ]
+        },
+        "Nephrotic Syndrome": {
+          hpc: [
+            "Swelling: Periorbital (worse in morning), leg edema, ascites, scrotal/vulvar",
+            "Frothy urine: Proteinuria",
+            "Breathlessness: Pleural effusion, pulmonary edema",
+            "Infections: Recurrent (due to immunoglobulin loss)",
+            "Thrombosis: DVT, PE (hypercoagulable state)"
+          ],
+          ros: "Hematuria, oliguria, abdominal pain",
+          pmh: "Diabetes, SLE, previous kidney disease, malaria, HIV, hepatitis",
+          dh: "NSAIDs, gold, penicillamine",
+          sh: "Recent infections, family history",
+          examination: [
+            "General: Anasarca, pallor",
+            "Face: Periorbital edema",
+            "CVS: Hypertension (sometimes), JVP assessment",
+            "Chest: Pleural effusion (reduced breath sounds, stony dull percussion)",
+            "Abdomen: Ascites (shifting dullness), no hepatosplenomegaly usually",
+            "Limbs: Pitting edema (bilateral, symmetrical)"
+          ]
+        },
+        "Glomerulonephritis": {
+          hpc: [
+            "Hematuria: Smoky/cola-colored urine, timing",
+            "Oliguria: Reduced urine output",
+            "Edema: Facial, leg swelling",
+            "Hypertension symptoms: Headache, visual changes",
+            "Preceding infection: Sore throat, skin infection (1-3 weeks prior)"
+          ],
+          ros: "Joint pains, rash, hemoptysis (Goodpasture's, vasculitis)",
+          pmh: "Recent streptococcal infection, SLE, vasculitis, diabetes",
+          dh: "Recent drugs",
+          sh: "Recent travel, exposures",
+          examination: [
+            "General: Periorbital edema, pallor",
+            "Vitals: Hypertension",
+            "CVS: Signs of fluid overload",
+            "Chest: Creptitations (pulmonary edema or hemorrhage)",
+            "Abdomen: Loin tenderness",
+            "Skin: Purpura, rashes (vasculitis)"
+          ]
+        }
+      }
+    },
+    endo: {
+      title: "ENDOCRINOLOGY",
+      diseases: {
+        "Diabetes Mellitus": {
+          hpc: [
+            "Polyuria: Frequency, nocturia, volume",
+            "Polydipsia: Increased thirst, quantity",
+            "Polyphagia: Increased appetite despite weight loss",
+            "Weight loss: Amount, duration (Type 1)",
+            "Complications: Visual changes, numbness/tingling, erectile dysfunction, recurrent infections",
+            "Hypoglycemia: Episodes, awareness, triggers"
+          ],
+          ros: "Fatigue, skin infections, slow wound healing",
+          pmh: "Duration of diabetes, previous complications (retinopathy, neuropathy, nephropathy), CVD",
+          dh: "Insulin (type, dose, regimen), oral hypoglycemics, steroids",
+          sh: "Diet, exercise, smoking, alcohol, family history",
+          examination: [
+            "General: BMI, acanthosis nigricans",
+            "Eyes: Visual acuity, fundoscopy (retinopathy)",
+            "CVS: BP, peripheral pulses, bruits",
+            "Feet: Inspection (ulcers, deformities), sensation (monofilament, vibration), pulses, reflexes",
+            "Skin: Injection sites (lipohypertrophy), infections",
+            "Neuro: Peripheral neuropathy (glove-and-stocking), autonomic dysfunction"
+          ]
+        },
+        "Thyrotoxicosis": {
+          hpc: [
+            "Weight loss: Despite increased appetite",
+            "Heat intolerance: Sweating, preference for cold",
+            "Tremor: Fine tremor of hands",
+            "Palpitations: Rapid heartbeat, irregular",
+            "Anxiety: Nervousness, irritability, insomnia",
+            "Bowel: Frequent bowel movements, diarrhea",
+            "Menstrual: Oligomenorrhea",
+            "Eye symptoms: Grittiness, double vision, prominence (Graves')"
+          ],
+          ros: "Muscle weakness, neck swelling",
+          pmh: "Autoimmune diseases, family history of thyroid disease",
+          dh: "Recent medications (amiodarone, contrast)",
+          sh: "Smoking (worsens eye disease), stress",
+          examination: [
+            "General: Agitation, warm moist skin, fine tremor",
+            "Hands: Palmar erythema, onycholysis, acropachy",
+            "Pulse: Tachycardia, AF",
+            "Eyes: Lid lag, lid retraction, proptosis, ophthalmoplegia, chemosis",
+            "Neck: Goiter (size, symmetry, nodules), bruit, lymph nodes",
+            "Skin: Pretibial myxedema (Graves')",
+            "Neuro: Hyperreflexia, proximal myopathy"
+          ]
+        },
+        "Hypothyroidism": {
+          hpc: [
+            "Weight gain: Despite poor appetite",
+            "Cold intolerance: Feeling cold, reduced sweating",
+            "Fatigue: Lethargy, excessive sleeping",
+            "Mental: Depression, poor memory, slow thinking",
+            "Constipation: Reduced bowel movements",
+            "Voice: Hoarseness, deepening",
+            "Skin: Dry, coarse",
+            "Menstrual: Menorrhagia",
+            "Hair: Loss, coarse"
+          ],
+          ros: "Muscle aches, carpal tunnel symptoms",
+          pmh: "Previous thyroid disease, radioiodine, thyroid surgery, autoimmune diseases",
+          dh: "Lithium, amiodarone, levothyroxine compliance",
+          sh: "Family history, iodine intake",
+          examination: [
+            "General: Obesity, slow movements, puffy face, periorbital edema",
+            "Hands: Cool, dry skin, delayed relaxation of reflexes",
+            "Face: Loss of outer third of eyebrows, macroglossia",
+            "Neck: Goiter (if present)",
+            "Voice: Hoarse, slow speech",
+            "Skin: Dry, coarse, cool, yellowish (carotenemia)",
+            "Neuro: Slow relaxing reflexes, carpal tunnel signs"
+          ]
+        },
+        "Cushing Syndrome": {
+          hpc: [
+            "Weight gain: Central obesity, facial, buffalo hump",
+            "Weakness: Proximal muscle weakness",
+            "Skin changes: Easy bruising, poor wound healing, striae (purple, wide)",
+            "Mood: Depression, psychosis, insomnia",
+            "Menstrual: Oligomenorrhea, hirsutism, acne",
+            "Infections: Recurrent",
+            "Bone: Fractures, back pain (osteoporosis)"
+          ],
+          ros: "Polyuria, polydipsia (diabetes), headache, visual changes (pituitary tumor)",
+          pmh: "Steroid use, pituitary disease, malignancy",
+          dh: "Corticosteroids (dose, duration, route)",
+          sh: "Alcohol use",
+          examination: [
+            "General: Moon face, central obesity, buffalo hump, thin limbs",
+            "Skin: Thin, striae (purple, >1cm wide), bruises, acne, hirsutism, hyperpigmentation (if ACTH-dependent)",
+            "BP: Hypertension",
+            "Eyes: Visual field defects (pituitary tumor), fundoscopy",
+            "Muscle: Proximal myopathy (stand from squat)",
+            "Mood: Assess mental state"
+          ]
+        },
+        "Addison Disease": {
+          hpc: [
+            "Fatigue: Progressive, profound weakness",
+            "Weight loss: Anorexia",
+            "Hypotension symptoms: Dizziness, syncope, postural",
+            "GI: Nausea, vomiting, diarrhea, abdominal pain",
+            "Salt craving: Hyponatremia",
+            "Hyperpigmentation: Darkening of skin, especially palmar creases, buccal mucosa, scars, pressure points",
+            "Crisis: Severe dehydration, shock, confusion"
+          ],
+          ros: "Muscle/joint pains, depression",
+          pmh: "Autoimmune diseases (vitiligo, thyroid), TB, HIV, previous steroid use",
+          dh: "Recent steroid withdrawal",
+          sh: "TB exposure, travel",
+          examination: [
+            "General: Cachexia, dehydration, hyperpigmentation (palmar creases, buccal mucosa, scars, nipples)",
+            "Vitals: Postural hypotension, fever (if crisis)",
+            "Skin: Vitiligo (autoimmune), hyperpigmentation",
+            "Abdomen: Tenderness (crisis)",
+            "Neuro: Confusion (if crisis)"
+          ]
+        }
+      }
+    },
+    infect: {
+      title: "INFECTIOUS DISEASES",
+      diseases: {
+        "Tuberculosis (Pulmonary)": {
+          hpc: [
+            "Cough: Duration (>2-3 weeks), productive/dry",
+            "Sputum: Character, blood (hemoptysis)",
+            "Fever: Evening rise, night sweats (drenching)",
+            "Weight loss: Amount, appetite",
+            "Chest pain: Pleuritic",
+            "Breathlessness: Exertional dyspnea",
+            "Contacts: TB exposure, family members with TB"
+          ],
+          ros: "Lymph node swelling, bone pain, abdominal symptoms (extrapulmonary)",
+          pmh: "Previous TB, HIV status, diabetes, immunosuppression",
+          dh: "Anti-TB drugs (compliance, side effects), steroids, immunosuppressants",
+          sh: "Crowding, prison, homelessness, BCG vaccination, country of origin, HIV risk factors",
+          examination: [
+            "General: Cachexia, pallor, lymphadenopathy (cervical, axillary)",
+            "Vitals: Fever, tachypnea",
+            "Chest: Reduced expansion, dullness (effusion/consolidation), bronchial breathing (upper zones), crackles, amphoric breathing (cavitation)",
+            "Extrapulmonary: Gibbus (spine), ascites, hepatosplenomegaly, neurological signs (meningitis)"
+          ]
+        },
+        "HIV/AIDS": {
+          hpc: [
+            "Acute HIV: Fever, rash, sore throat, lymphadenopathy (seroconversion illness)",
+            "Chronic: Recurrent infections, weight loss, chronic diarrhea, oral thrush",
+            "Opportunistic infections: Pneumonia (PCP), TB symptoms, neurological symptoms (toxoplasmosis, cryptococcal meningitis)",
+            "Skin: Kaposi sarcoma (purple lesions), herpes zoster"
+          ],
+          ros: "Visual changes (CMV retinitis), headache, confusion",
+          pmh: "STIs, TB, hepatitis, previous AIDS-defining illnesses",
+          dh: "ART (adherence, side effects), prophylaxis (cotrimoxazole)",
+          sh: "Sexual history, IV drug use, blood transfusions, partner status, disclosure",
+          examination: [
+            "General: Wasting, pallor, lymphadenopathy (generalized)",
+            "Skin: Kaposi sarcoma, herpes zoster scars, seborrheic dermatitis, fungal infections",
+            "Mouth: Oral candidiasis, hairy leukoplakia, Kaposi lesions",
+            "Chest: Signs of opportunistic infections",
+            "Abdomen: Hepatosplenomegaly",
+            "Neuro: Focal signs, peripheral neuropathy, cognitive assessment"
+          ]
+        },
+        "Malaria": {
+          hpc: [
+            "Fever: Pattern (tertian/quartan), rigors, sweating",
+            "Headache: Severe, generalized",
+            "Body aches: Myalgia, arthralgia",
+            "GI: Nausea, vomiting, diarrhea",
+            "Complications: Confusion, seizures, jaundice, dark urine (severe malaria)",
+            "Travel: Endemic area, prophylaxis use, timing of symptoms after return"
+          ],
+          ros: "Cough, abdominal pain",
+          pmh: "Previous malaria attacks, G6PD deficiency, splenectomy",
+          dh: "Antimalarials (prophylaxis, compliance)",
+          sh: "Travel history (dates, locations), mosquito exposure, bed net use",
+          examination: [
+            "General: Fever (measure), pallor, jaundice",
+            "Vitals: Temperature pattern, BP, consciousness (GCS)",
+            "Abdomen: Splenomegaly, hepatomegaly, tenderness",
+            "Severe malaria: Confusion, seizures, respiratory distress, bleeding, shock"
+          ]
+        },
+        "Typhoid Fever": {
+          hpc: [
+            "Fever: Stepwise increase, sustained high fever",
+            "Headache: Severe, frontal",
+            "GI: Constipation (early) then diarrhea, abdominal pain",
+            "General: Malaise, anorexia",
+            "Rash: Rose spots (rare)",
+            "Complications: Confusion, bleeding, perforation"
+          ],
+          ros: "Cough, epistaxis",
+          pmh: "Recent illness, vaccination status",
+          dh: "Antibiotics, travel medications",
+          sh: "Food/water source, travel, contacts",
+          examination: [
+            "General: Toxic appearance, relative bradycardia",
+            "Vitals: High fever, pulse-temperature dissociation",
+            "Tongue: Coated",
+            "Abdomen: Tenderness (especially RIF), hepatosplenomegaly, distension (ileus)",
+            "Skin: Rose spots (trunk, faint pink macules)",
+            "Complications: Signs of perforation (peritonitis), bleeding"
+          ]
+        }
+      }
+    },
+    pulm: {
+      title: "PULMONOLOGY",
+      diseases: {
+        "Pneumonia": {
+          hpc: [
+            "Cough: Productive/dry, duration, sputum (purulent, rusty, blood)",
+            "Fever: Onset, rigors, sweats",
+            "Chest pain: Pleuritic, location",
+            "Breathlessness: Severity, orthopnea",
+            "Systemics: Rigors, night sweats",
+            "Severity: CURB-65 (Confusion, Urea, RR, BP, age ≥65)"
+          ],
+          ros: "Hemoptysis, weight loss (if chronic)",
+          pmh: "COPD, asthma, heart failure, immunosuppression, aspiration risk",
+          dh: "Immunosuppressants, steroids, recent antibiotics",
+          sh: "Smoking, alcohol, occupational exposure, recent travel, bird/animal exposure",
+          examination: [
+            "General: Fever, respiratory distress, cyanosis, confusion",
+            "Vitals: Fever, tachypnea, tachycardia, hypotension, SpO2",
+            "Chest: Reduced expansion, dull percussion, increased vocal resonance, bronchial breathing, crackles (localized)",
+            "Pleural rub: If pleural involvement",
+            "Complications: Signs of effusion, empyema"
+          ]
+        },
+        "COPD/Chronic Bronchitis/Emphysema": {
+          hpc: [
+            "Breathlessness: Progression (MRC dyspnea scale), exercise tolerance",
+            "Cough: Chronic (>3 months), productive, sputum character/volume",
+            "Wheeze: Persistent, variable",
+            "Exacerbations: Frequency, triggers, hospital admissions, ICU/ventilation",
+            "Symptoms of cor pulmonale: Ankle swelling, orthopnea"
+          ],
+          ros: "Weight loss, morning headaches (hypercapnia)",
+          pmh: "Asthma, pneumonia, TB, alpha-1 antitrypsin deficiency",
+          dh: "Inhalers (type, technique, compliance), oxygen, steroids",
+          sh: "Smoking (pack-years), occupational exposures (dust, chemicals), home oxygen",
+          examination: [
+            "General: Cachexia, cyanosis, pursed-lip breathing, accessory muscle use",
+            "Hands: Tar staining, CO2 retention flap",
+            "Chest: Barrel chest, reduced expansion, hyperresonant, reduced breath sounds, wheeze, prolonged expiration",
+            "CVS: Signs of cor pulmonale (JVP raised, RV heave, loud P2, peripheral edema, hepatomegaly)"
+          ]
+        },
+        "Asthma": {
+          hpc: [
+            "Breathlessness: Episodic, triggers",
+            "Wheeze: Expiratory, variability",
+            "Cough: Dry, nocturnal, early morning",
+            "Chest tightness: Episodic",
+            "Triggers: Allergens, exercise, cold, infections, emotions, NSAIDs",
+            "Diurnal variation: Worse at night/early morning",
+            "Current control: Frequency of symptoms, rescue inhaler use, sleep disturbance, activity limitation",
+            "Severity: Previous ICU admissions, oral steroid courses"
+          ],
+          ros: "Atopy (eczema, rhinitis), GERD",
+          pmh: "Atopy, allergies, previous severe attacks",
+          dh: "Inhalers (type, technique, compliance), oral steroids, beta-blockers, NSAIDs",
+          sh: "Smoking, occupational exposures, pets, family history of atopy",
+          examination: [
+            "General: Respiratory distress (severe attack), inability to speak in sentences",
+            "Vitals: Tachypnea, tachycardia, pulsus paradoxus, SpO2",
+            "Chest: Reduced expansion, hyperresonant, widespread polyphonic wheeze, silent chest (life-threatening)",
+            "Peak flow: Measure if stable"
+          ]
+        },
+        "Pleural Effusion": {
+          hpc: [
+            "Breathlessness: Progressive, orthopnea",
+            "Chest pain: Pleuritic (if associated pleuritis)",
+            "Cough: Usually dry",
+            "Systemics: Fever, night sweats, weight loss (TB, malignancy)",
+            "Underlying cause: Heart failure, liver disease, kidney disease, malignancy, infection symptoms"
+          ],
+          ros: "Leg swelling (heart failure), jaundice (liver), symptoms of underlying malignancy",
+          pmh: "Heart failure, liver disease, CKD, malignancy, TB, PE",
+          dh: "Diuretics",
+          sh: "Smoking, asbestos exposure, TB contacts",
+          examination: [
+            "General: Respiratory distress, cachexia (malignancy)",
+            "Chest: Reduced expansion (affected side), stony dull percussion, reduced/absent breath sounds, reduced vocal resonance, mediastinal shift (massive effusion)",
+            "CVS: Signs of heart failure, liver disease"
+          ]
+        },
+        "Lung Cancer": {
+          hpc: [
+            "Cough: New or changed, persistent",
+            "Hemoptysis: Amount, frequency",
+            "Breathlessness: Progressive",
+            "Chest pain: Dull, constant (chest wall invasion)",
+            "Systemics: Weight loss, anorexia, fatigue",
+            "Hoarseness: Recurrent laryngeal nerve involvement",
+            "SVC obstruction: Facial/arm swelling, headache, breathlessness",
+            "Paraneoplastic: Bone pain, confusion (hypercalcemia), muscle weakness (Lambert-Eaton)"
+          ],
+          ros: "Bone pain (metastases), neurological symptoms",
+          pmh: "COPD, previous malignancy, TB",
+          dh: "None specific",
+          sh: "Smoking (pack-years), occupational exposures (asbestos, radon), family history",
+          examination: [
+            "General: Cachexia, clubbing, HPOA, lymphadenopathy (supraclavicular), anemia, jaundice",
+            "Face: Horner syndrome (Pancoast tumor), SVC obstruction",
+            "Chest: Signs of collapse, consolidation, effusion, chest wall mass",
+            "Abdomen: Hepatomegaly (metastases)",
+            "Neuro: Focal signs (brain mets), proximal weakness (paraneoplastic)"
+          ]
+        }
+      }
+    },
+    cardio: {
+      title: "CARDIOLOGY",
+      diseases: {
+        "Heart Failure": {
+          hpc: [
+            "Breathlessness: Exertional (NYHA class), orthopnea (pillows?), PND",
+            "Swelling: Ankle edema, abdominal distension, weight gain",
+            "Fatigue: Exercise intolerance, weakness",
+            "Cough: Nocturnal, pink frothy sputum (acute pulmonary edema)",
+            "Palpitations: If AF",
+            "Chest pain: If ischemic cause",
+            "Progression: Functional capacity, hospitalizations"
+          ],
+          ros: "Nocturia, loss of appetite, nausea",
+          pmh: "IHD, MI, hypertension, valvular disease, AF, diabetes, cardiomyopathy",
+          dh: "Diuretics, ACE-I/ARBs, beta-blockers, digoxin, compliance",
+          sh: "Smoking, alcohol, salt intake, exercise tolerance",
+          examination: [
+            "General: Respiratory distress, cachexia (severe), cyanosis",
+            "Vitals: BP, pulse (irregular if AF), tachypnea",
+            "Hands: Peripheral cyanosis, cool extremities",
+            "JVP: Elevated, hepatojugular reflux",
+            "Precordium: Displaced apex (LV dilatation), S3 gallop, murmurs",
+            "Lungs: Bibasal crackles, pleural effusion",
+            "Abdomen: Hepatomegaly, ascites, hepatojugular reflux",
+            "Limbs: Pitting edema (sacral if bed-bound)"
+          ]
+        },
+        "Hypertension": {
+          hpc: [
+            "Often asymptomatic",
+            "Headache: Occipital, morning",
+            "Visual disturbances: Blurred vision",
+            "Chest pain: If LVH or IHD",
+            "Breathlessness: If heart failure",
+            "Palpitations: If arrhythmia",
+            "End-organ damage: Stroke symptoms, renal symptoms, visual loss"
+          ],
+          ros: "Hematuria, weakness, sweating/palpitations (pheochromocytoma)",
+          pmh: "Previous BP readings, diabetes, renal disease, stroke, IHD",
+          dh: "Antihypertensives (compliance, side effects), NSAIDs, steroids, oral contraceptives",
+          sh: "Smoking, alcohol, salt intake, exercise, stress, family history",
+          examination: [
+            "Vitals: BP (both arms, lying and standing), radio-femoral delay (coarctation), pulse (rate, rhythm)",
+            "Eyes: Fundoscopy (hypertensive retinopathy - AV nipping, hemorrhages, exudates, papilledema)",
+            "CVS: Apex (LVH), S4, aortic regurgitation murmur",
+            "Abdomen: Renal masses (PKD), renal bruits, abdominal aortic aneurysm",
+            "Peripheral: Pulses, bruits"
+          ]
+        },
+        "Ischemic Heart Disease/Angina": {
+          hpc: [
+            "Chest pain: Site (retrosternal), Character (heavy, tight, pressure)",
+            "Radiation: Jaw, arms (left > right), back",
+            "Associated: Sweating, nausea, breathlessness, palpitations",
+            "Timing: Duration (<20min = angina, >20min = MI), frequency",
+            "Exacerbating: Exertion, cold, emotions, meals",
+            "Relieving: Rest, GTN (how quickly?)",
+            "Severity: Limiting daily activities?",
+            "Pattern: Stable vs unstable (rest pain, crescendo, new onset)"
+          ],
+          ros: "Syncope, edema",
+          pmh: "Previous MI, PCI/CABG, diabetes, hypertension, hyperlipidemia, stroke, PVD",
+          dh: "Aspirin, clopidogrel, statins, beta-blockers, ACE-I, GTN use",
+          sh: "Smoking, diabetes, family history of premature IHD, diet, exercise",
+          examination: [
+            "General: Distress during pain, xanthelasma, corneal arcus",
+            "Vitals: BP, pulse (regular/irregular)",
+            "CVS: Apex (displaced if previous MI), S4, murmurs (MR from papillary dysfunction)",
+            "Signs of complications: Heart failure, arrhythmias",
+            "Peripheral: Pulses (PVD), bruits"
+          ]
+        },
+        "Acute Myocardial Infarction": {
+          hpc: [
+            "Chest pain: Severe, crushing, retrosternal >20 minutes",
+            "Radiation: Jaw, arms, back, epigastrium",
+            "Associated: Sweating, nausea/vomiting, breathlessness, sense of doom",
+            "No relief: With rest or GTN",
+            "Onset: Timing, at rest/exertion",
+            "Complications: Palpitations, syncope, confusion"
+          ],
+          ros: "Previous similar episodes",
+          pmh: "CAD risk factors, previous MI/angina",
+          dh: "Recent aspirin, anticoagulants",
+          sh: "Smoking, cocaine use, stress",
+          examination: [
+            "General: Distress, pallor, sweating, anxiety",
+            "Vitals: BP (hypotension if cardiogenic shock), pulse (tachy/brady, irregular if VT/VF)",
+            "CVS: Apex (dyskinetic if large MI), S3/S4, new MR murmur (papillary rupture), pericardial rub (Dressler's)",
+            "Chest: Crackles (pulmonary edema)",
+            "Complications: Cardiogenic shock, acute heart failure"
+          ]
+        },
+        "Infective Endocarditis": {
+          hpc: [
+            "Fever: Duration, pattern, rigors, night sweats",
+            "Cardiac: New murmur, heart failure symptoms, chest pain",
+            "Embolic: Stroke symptoms, abdominal pain (splenic infarct), hematuria (renal infarct), limb ischemia",
+            "General: Weight loss, malaise, myalgia, arthralgia",
+            "Risk factors: Previous heart disease, valve replacement, dental procedures, IV drug use, recent invasive procedures"
+          ],
+          ros: "Back pain (vertebral osteomyelitis), confusion",
+          pmh: "Valvular disease, congenital heart disease, rheumatic fever, prosthetic valves, previous endocarditis",
+          dh: "Recent antibiotics, antibiotic prophylaxis",
+          sh: "IV drug use, dental hygiene, recent procedures",
+          examination: [
+            "General: Fever, clubbing, pallor, splinter hemorrhages, Osler nodes (painful), Janeway lesions (painless), petechiae",
+            "Eyes: Roth spots, conjunctival hemorrhages",
+            "CVS: New or changing murmur, signs of heart failure",
+            "Abdomen: Splenomegaly, renal angle tenderness",
+            "Neuro: Focal signs (embolic stroke, mycotic aneurysm)"
+          ]
+        },
+        "Atrial Fibrillation": {
+          hpc: [
+            "Palpitations: Onset (sudden vs gradual), duration, frequency, irregular",
+            "Breathlessness: Exertional, orthopnea",
+            "Chest discomfort: Tightness",
+            "Dizziness: Syncope, presyncope",
+            "Fatigue: Exercise intolerance",
+            "Stroke symptoms: If embolic event",
+            "Type: Paroxysmal, persistent, permanent"
+          ],
+          ros: "Weight loss, tremor (thyrotoxicosis)",
+          pmh: "Hypertension, IHD, valvular disease, heart failure, thyroid disease, stroke",
+          dh: "Rate control (beta-blockers, digoxin), anticoagulation (warfarin, DOACs)",
+          sh: "Alcohol (binge drinking), caffeine, smoking",
+          examination: [
+            "General: Distress if fast ventricular rate",
+            "Vitals: Irregularly irregular pulse, pulse deficit, BP",
+            "CVS: Irregular rhythm, variable S1 intensity, murmurs (especially mitral stenosis)",
+            "Signs of underlying cause: Thyrotoxicosis, heart failure",
+            "Stroke: Neurological examination"
+          ]
+        }
+      }
+    },
+    rheum: {
+      title: "RHEUMATOLOGY",
+      diseases: {
+        "Rheumatoid Arthritis": {
+          hpc: [
+            "Joint pain: Symmetrical, small joints (MCP, PIP, wrists), duration >6 weeks",
+            "Morning stiffness: Duration (>30-60 minutes)",
+            "Swelling: Joints affected, progression",
+            "Functional impairment: Buttoning, writing, walking, ADLs",
+            "Systemics: Fatigue, weight loss, low-grade fever",
+            "Extra-articular: Eye symptoms (scleritis), breathlessness (ILD), numbness (neuropathy)"
+          ],
+          ros: "Dry eyes/mouth (Sjögren's), skin nodules, pleuritic pain",
+          pmh: "Other autoimmune diseases, previous joint problems",
+          dh: "NSAIDs, steroids, DMARDs (methotrexate, hydroxychloroquine), biologics",
+          sh: "Smoking (worse prognosis), occupation, family history",
+          examination: [
+            "Hands: Swelling (MCP, PIP, wrists), tenderness, deformities (ulnar deviation, swan-neck, boutonniere, Z-thumb), rheumatoid nodules, muscle wasting",
+            "Other joints: Elbows, shoulders, knees, ankles, MTPs",
+            "Extra-articular: Subcutaneous nodules (extensor surfaces), scleritis, lung crackles (ILD), splenomegaly (Felty's), peripheral neuropathy"
+          ]
+        },
+        "Osteoarthritis": {
+          hpc: [
+            "Joint pain: Mechanical (worse with use, better with rest), asymmetrical",
+            "Stiffness: Brief (<30 minutes), after inactivity (gelling)",
+            "Common sites: Knees, hips, hands (DIP, PIP, CMC), spine",
+            "Functional limitation: Walking, stairs, gripping",
+            "No systemic symptoms"
+          ],
+          ros: "Back pain, neck pain",
+          pmh: "Previous joint injury, obesity, occupation",
+          dh: "Analgesics, NSAIDs, intra-articular injections",
+          sh: "Occupation (heavy manual work), sports injuries",
+          examination: [
+            "Affected joints: Bony swelling (Heberden's nodes - DIP, Bouchard's nodes - PIP), crepitus, reduced range of motion, no warmth",
+            "Knees: Varus/valgus deformity, effusion",
+            "Hips: Antalgic gait, reduced internal rotation",
+            "Spine: Reduced mobility, tenderness"
+          ]
+        },
+        "Systemic Lupus Erythematosus": {
+          hpc: [
+            "Constitutional: Fever, fatigue, weight loss",
+            "Joints: Arthralgia/arthritis (non-erosive), small joints",
+            "Skin: Malar rash (butterfly), discoid rash, photosensitivity, oral ulcers, hair loss",
+            "Renal: Frothy urine, hematuria, edema",
+            "Cardiac: Chest pain (pericarditis, pleuritis)",
+            "Neuro: Seizures, psychosis, headaches, stroke",
+            "Hematologic: Easy bruising, bleeding",
+            "Raynaud's phenomenon"
+          ],
+          ros: "Dry eyes/mouth, breathlessness",
+          pmh: "Other autoimmune diseases, recurrent miscarriages (antiphospholipid syndrome)",
+          dh: "Steroids, hydroxychloroquine, immunosuppressants",
+          sh: "Sun exposure, smoking, family history",
+          examination: [
+            "Skin: Malar rash, discoid lesions, photosensitive rash, livedo reticularis, alopecia",
+            "Mouth: Oral/nasal ulcers",
+            "Joints: Synovitis (non-deforming usually), Jaccoud's arthropathy",
+            "CVS: Pericardial rub",
+            "Chest: Pleural rub, crackles",
+            "Abdomen: Ascites, hepatosplenomegaly",
+            "Neuro: Focal signs, cognitive assessment"
+          ]
+        },
+        "Gout": {
+          hpc: [
+            "Joint pain: Sudden onset, severe, often nocturnal",
+            "Site: First MTP (podagra), ankles, knees, elbows",
+            "Character: Red, hot, swollen, exquisitely tender",
+            "Triggers: Alcohol, red meat, seafood, dehydration, diuretics, illness",
+            "Duration: Days to weeks if untreated",
+            "Previous attacks: Frequency, joints affected",
+            "Chronic: Tophi, chronic arthropathy"
+          ],
+          ros: "Renal stones, kidney disease",
+          pmh: "Hypertension, diabetes, CKD, heart failure, cancer (tumor lysis)",
+          dh: "Diuretics, aspirin, allopurinol, colchicine, NSAIDs",
+          sh: "Alcohol, diet (purines), family history",
+          examination: [
+            "Affected joint: Erythema, warmth, swelling, extreme tenderness, reduced movement",
+            "Chronic: Tophi (ears, olecranon, joints), chronic gouty arthritis",
+            "Signs of metabolic syndrome: Obesity, hypertension"
+          ]
+        }
+      }
+    }
+  };
+
+  const presentationTemplate = {
+    biodata: [
+      "Name: Mr/Mrs/Miss [Name]",
+      "Age: [X] years old",
+      "Sex: Male/Female",
+      "Occupation: [Occupation]",
+      "Address/State: [Location]",
+      "Tribe/Ethnicity: [if relevant]",
+      "Religion: [if relevant]",
+      "Marital Status: Single/Married/Widowed",
+      "Informant: Patient/Relative (reliability)"
+    ],
+    pc: [
+      "State the main complaint(s) and duration",
+      "Example: 'Abdominal pain and vomiting for 3 days'"
+    ],
+    hpc: [
+      "Use SOCRATES/OLDCART for pain:",
+      "- Site: Where is it?",
+      "- Onset: When did it start? Sudden/gradual?",
+      "- Character: What's it like? (Sharp, dull, burning)",
+      "- Radiation: Does it spread?",
+      "- Associated symptoms: What else?",
+      "- Timing: Constant/intermittent? Duration?",
+      "- Exacerbating/Relieving: What makes it worse/better?",
+      "- Severity: Rate 1-10, affecting function?",
+      "",
+      "For non-pain symptoms use ODPARA:",
+      "- Onset, Duration, Progression, Associated, Relieving, Aggravating",
+      "",
+      "Always ask about:",
+      "- Timeline of events (chronological)",
+      "- Systemic symptoms (fever, weight loss, night sweats, appetite)",
+      "- What brought them to hospital NOW?",
+      "- Treatment taken before presentation"
+    ],
+    ros: [
+      "Brief screen of other systems:",
+      "- General: Fever, weight changes, appetite, night sweats",
+      "- CVS: Chest pain, palpitations, dyspnea, orthopnea, PND, edema",
+      "- RS: Cough, sputum, hemoptysis, wheeze, chest pain",
+      "- GIT: Nausea, vomiting, diarrhea, constipation, abdominal pain, jaundice, bleeding",
+      "- GUS: Dysuria, frequency, hematuria, discharge, sexual history",
+      "- CNS: Headache, seizures, weakness, numbness, vision, speech",
+      "- MSK: Joint pains, swelling, stiffness, back pain"
+    ],
+    pmh: [
+      "Previous illnesses: Hospitalizations, surgeries",
+      "Chronic conditions: Diabetes, hypertension, asthma, etc.",
+      "For specific systems, ask about relevant past diseases"
+    ],
+    dh: [
+      "Current medications: Name, dose, duration, compliance",
+      "Allergies: Drug allergies and reaction type",
+      "Recent medication changes"
+    ],
+    fh: [
+      "Similar illness in family",
+      "Hereditary conditions: Diabetes, hypertension, sickle cell, cancers",
+      "Deaths in family and causes"
+    ],
+    sh: [
+      "Smoking: Cigarettes/day, pack-years, duration, quit date",
+      "Alcohol: Units/week, type, duration, CAGE questions",
+      "Recreation drugs: Type, route, duration",
+      "Occupation: Current and previous, exposures",
+      "Travel: Recent travel to endemic areas",
+      "Living conditions: Housing, who lives with",
+      "Sexual history: If relevant to presentation",
+      "Diet and exercise",
+      "Functional status: ADLs, mobility"
+    ]
+  };
+
+  const examinationApproach = {
+    general: [
+      "General appearance: Well/ill-looking, distressed, comfortable at rest",
+      "Body habitus: Cachexia, obesity, wasting",
+      "Vital signs: Temperature, Pulse, BP, RR, SpO2, Pain score",
+      "Conscious level: GCS or AVPU",
+      "Pallor: Conjunctiva, palmar",
+      "Jaundice: Sclera, under tongue",
+      "Cyanosis: Central (tongue) vs peripheral (nail beds)",
+      "Edema: Pitting/non-pitting, site",
+      "Lymphadenopathy: Cervical, axillary, inguinal",
+      "Clubbing: Check nails",
+      "Dehydration: Skin turgor, mucous membranes, JVP"
+    ],
+    systematic: "Perform focused examination based on presenting complaint, then complete general examination of all systems"
+  };
+
+  const presentationStructure = `
+**THE 5Cs PRESENTATION FRAMEWORK**
+
+Opening: "This is a [age]-year-old [gender] [occupation] who presented to the [ward/clinic] with a [duration] history of [main complaint(s)]."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**1st C - COMPLAINT**
+What is the patient complaining of?
+- State the main presenting complaint(s) with duration
+- Example: "The patient presents with epigastric pain and vomiting for 3 days"
+- Be specific and concise
+- Mention all major complaints if more than one
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**2nd C - CAUSE**
+What risk factors or predisposing factors does the patient have?
+
+From PAST MEDICAL HISTORY:
+- Relevant chronic illnesses (diabetes, hypertension, etc.)
+- Previous similar episodes
+- Relevant surgeries or hospitalizations
+- Known risk factors for the current presentation
+
+From DRUG HISTORY:
+- Medications that may contribute to current problem
+- Drug allergies
+- Recent medication changes
+
+From SOCIAL HISTORY:
+- Smoking (pack-years if respiratory/cardiac)
+- Alcohol (units/week if liver/GI)
+- Occupation (if relevant exposures)
+- Travel history (if infectious disease)
+- Sexual history (if relevant)
+- Living conditions
+
+From FAMILY HISTORY:
+- Hereditary conditions relevant to presentation
+- Family history of similar illness
+
+Example: "Predisposing factors include a 20-pack-year smoking history, poorly controlled diabetes for 10 years on metformin, and occupational exposure to asbestos."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**3rd C - COURSE**
+How did the illness progress? (CHRONOLOGICAL NARRATIVE)
+
+Tell the story of the illness from onset to presentation:
+
+ONSET:
+- When exactly did it start? (days/weeks/months ago)
+- How did it start? (sudden vs gradual)
+- What was the patient doing when it started?
+
+CHARACTER (using SOCRATES for pain or OLDCART for symptoms):
+- Site/Location
+- Onset 
+- Character (sharp, dull, burning, etc.)
+- Radiation
+- Associated symptoms
+- Timing (constant/intermittent, relation to activities/meals)
+- Exacerbating factors
+- Severity (1-10 scale, impact on function)
+- Relieving factors
+
+PROGRESSION:
+- How has it changed over time? (worse/better/same)
+- New symptoms that developed
+- What has been tried? (home remedies, medications, hospital visits)
+
+CURRENT STATUS:
+- How is it now?
+- Why presenting today? (what changed to make them come now?)
+
+Include relevant REVIEW OF SYSTEMS (positive and pertinent negatives):
+- Constitutional: fever, weight loss, night sweats, appetite
+- System-specific symptoms
+- Relevant negatives: "No hemoptysis, no chest pain, no leg swelling"
+
+Example: "The pain started suddenly 3 days ago while eating dinner. Initially located in the epigastrium, it was described as burning in character, radiating to the back, with associated nausea and vomiting. The pain worsened after meals and was partially relieved by antacids. Over the next 2 days, the vomiting became more frequent with coffee-ground material noted yesterday. He presents today because of increasing weakness and dizziness. He denies hematemesis, melena, or previous similar episodes."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**4th C - COMPLICATIONS**
+What examination findings did you discover? Any complications?
+
+GENERAL EXAMINATION:
+- Appearance: well/ill-looking, comfortable/distressed
+- Vitals: "Temperature [X]°C, Pulse [X]bpm regular/irregular, BP [X/X]mmHg, RR [X]/min, SpO2 [X]% on room air"
+- Conscious level: Alert, GCS 15/15
+- Nutritional status: Well-nourished/cachexic/obese (BMI if known)
+- Hydration: Well-hydrated/dehydrated
+- Pallor: Present/absent (conjunctival, palmar)
+- Jaundice: Present/absent (scleral)
+- Cyanosis: Present/absent (central/peripheral)
+- Edema: Present/absent (site, pitting/non-pitting)
+- Lymphadenopathy: Present/absent (sites)
+- Clubbing: Present/absent
+
+SYSTEMIC EXAMINATION (Focus on relevant system, then brief others):
+Present positive findings and relevant negative findings
+
+For primary system:
+- Detailed findings
+- Signs of complications
+
+For other systems:
+- Brief mention of normal/abnormal
+- Any relevant findings
+
+Example: "On examination, the patient appeared in moderate distress. Vitals showed temperature 37.2°C, pulse 110bpm regular, BP 90/60mmHg, RR 20/min, SpO2 98% on room air. He was pale but not jaundiced or cyanosed. There was mild dehydration with reduced skin turgor. Abdominal examination revealed epigastric tenderness with guarding but no rigidity. Bowel sounds were present. Digital rectal examination showed melena. Cardiovascular and respiratory examinations were unremarkable."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**5th C - CARE**
+What is your management plan?
+
+SUMMARY STATEMENT:
+"In summary, this is a [age]-year-old [gender] with [risk factors from 2nd C] who presented with [key features from 3rd C], with examination findings of [key findings from 4th C], suggestive of [working diagnosis]."
+
+DIFFERENTIAL DIAGNOSES (in order of likelihood):
+1. Most likely diagnosis - with supporting evidence
+2. Second possibility - with brief reasoning
+3. Third possibility - with brief reasoning
+(Usually 3-5 differentials)
+
+Example: 
+"1. Bleeding peptic ulcer - supported by epigastric pain, coffee-ground vomiting, melena, NSAID use
+2. Gastritis - similar presentation but less severe
+3. Gastric malignancy - less likely given acute presentation but age is a risk factor"
+
+INVESTIGATIONS TO CONFIRM DIAGNOSIS:
+Immediate/Urgent:
+- Laboratory: FBC, U&E, LFTs, Coagulation profile, Group & Cross-match
+- Imaging: Erect CXR (if perforation suspected), USS abdomen
+- Special: Upper GI endoscopy
+
+Further investigations:
+- H. pylori testing
+- CT scan if complicated
+
+INVESTIGATIONS FOR COMPLICATIONS/ASSESSMENT:
+- ECG (if elderly or cardiac symptoms)
+- Serial hemoglobin (if bleeding)
+
+MANAGEMENT PLAN:
+
+A. IMMEDIATE/RESUSCITATIVE:
+- ABC approach if unstable
+- IV access (2 large bore cannulas if bleeding)
+- Fluid resuscitation
+- Oxygen if needed
+- NBM status
+
+B. SPECIFIC TREATMENT:
+Medical:
+- IV PPI (pantoprazole/omeprazole)
+- Blood transfusion if indicated
+- Correct coagulopathy if present
+- Antiemetics
+
+Surgical (if indicated):
+- Endoscopic intervention
+- Surgery if failed medical management
+
+C. SUPPORTIVE/MONITORING:
+- Vital signs monitoring
+- Fluid balance charting
+- Serial hemoglobin
+
+D. PREVENTIVE/LONG-TERM:
+- H. pylori eradication
+- Stop NSAIDs/switch to alternatives
+- Lifestyle modification
+- Follow-up endoscopy if needed
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-indigo-900 mb-2">Internal Medicine Clerking Guide</h1>
+          <p className="text-gray-700 text-lg">Complete templates for clinical examination and case presentation</p>
+        </header>
+
+        <div className="flex gap-4 mb-6 flex-wrap justify-center">
+          <button
+            onClick={() => setActiveTab('template')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+              activeTab === 'template'
+                ? 'bg-indigo-600 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-indigo-50'
+            }`}
+          >
+            <FileText size={20} />
+            General Template
+          </button>
+          <button
+            onClick={() => setActiveTab('systems')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+              activeTab === 'systems'
+                ? 'bg-indigo-600 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-indigo-50'
+            }`}
+          >
+            <Stethoscope size={20} />
+            Disease-Specific
+          </button>
+          <button
+            onClick={() => setActiveTab('presentation')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+              activeTab === 'presentation'
+                ? 'bg-indigo-600 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-indigo-50'
+            }`}
+          >
+            <ClipboardList size={20} />
+            Presentation Format
+          </button>
+        </div>
+
+        {activeTab === 'template' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-2xl font-bold text-indigo-800 mb-4">Standard Clerking Template</h2>
+              
+              {Object.entries(presentationTemplate).map(([key, content]) => (
+                <div key={key} className="mb-6">
+                  <button
+                    onClick={() => toggleSection(key)}
+                    className="w-full flex items-center justify-between p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors"
+                  >
+                    <h3 className="text-xl font-semibold text-indigo-900 uppercase">{key.replace('_', ' ')}</h3>
+                    {expandedSections[key] ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
+                  </button>
+                  
+                  {expandedSections[key] && (
+                    <div className="mt-3 p-4 bg-gray-50 rounded-lg">
+                      {Array.isArray(content) ? (
+                        <ul className="space-y-2">
+                          {content.map((item, idx) => (
+                            <li key={idx} className="text-gray-800 leading-relaxed">
+                              {item.startsWith('-') ? (
+                                <span className="ml-4">{item}</span>
+                              ) : item === '' ? (
+                                <br />
+                              ) : (
+                                <span className="font-medium">{item}</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-800">{content}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+              
+              <div className="mt-8 p-6 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg border-l-4 border-green-500">
+                <h3 className="text-xl font-bold text-green-800 mb-3">General Examination Approach</h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="font-semibold text-gray-800 mb-2">General Inspection:</p>
+                    <ul className="space-y-1 ml-4">
+                      {examinationApproach.general.map((item, idx) => (
+                        <li key={idx} className="text-gray-700">• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <p className="text-gray-700 italic mt-4">{examinationApproach.systematic}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'systems' && (
+          <div className="space-y-6">
+            {Object.entries(systemsData).map(([sysKey, system]) => (
+              <div key={sysKey} className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-3xl font-bold text-indigo-900 mb-6 border-b-4 border-indigo-500 pb-2">
+                  {system.title}
+                </h2>
+                
+                {Object.entries(system.diseases).map(([disease, details]) => (
+                  <div key={disease} className="mb-8">
+                    <button
+                      onClick={() => toggleSection(`${sysKey}-${disease}`)}
+                      className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 rounded-lg transition-all shadow-sm"
+                    >
+                      <h3 className="text-xl font-bold text-indigo-800">{disease}</h3>
+                      {expandedSections[`${sysKey}-${disease}`] ? 
+                        <ChevronDown size={24} className="text-indigo-600" /> : 
+                        <ChevronRight size={24} className="text-indigo-600" />
+                      }
+                    </button>
+                    
+                    {expandedSections[`${sysKey}-${disease}`] && (
+                      <div className="mt-4 space-y-4 pl-4 border-l-4 border-indigo-200">
+                        <div className="bg-red-50 p-4 rounded-lg">
+                          <h4 className="font-bold text-red-800 mb-2 text-lg">History of Presenting Complaint</h4>
+                          <ul className="space-y-1">
+                            {details.hpc.map((item, idx) => (
+                              <li key={idx} className="text-gray-800">• {item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        
+                        <div className="bg-yellow-50 p-4 rounded-lg">
+                          <h4 className="font-bold text-yellow-800 mb-2">Review of Systems</h4>
+                          <p className="text-gray-800">{details.ros}</p>
+                        </div>
+                        
+                        <div className="bg-purple-50 p-4 rounded-lg">
+                          <h4 className="font-bold text-purple-800 mb-2">Past Medical History</h4>
+                          <p className="text-gray-800">{details.pmh}</p>
+                        </div>
+                        
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                          <h4 className="font-bold text-blue-800 mb-2">Drug History</h4>
+                          <p className="text-gray-800">{details.dh}</p>
+                        </div>
+                        
+                        <div className="bg-green-50 p-4 rounded-lg">
+                          <h4 className="font-bold text-green-800 mb-2">Social History</h4>
+                          <p className="text-gray-800">{details.sh}</p>
+                        </div>
+                        
+                        <div className="bg-orange-50 p-4 rounded-lg">
+                          <h4 className="font-bold text-orange-800 mb-2 text-lg">Examination Findings</h4>
+                          <ul className="space-y-1">
+                            {details.examination.map((item, idx) => (
+                              <li key={idx} className="text-gray-800">• {item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'presentation' && (
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-3xl font-bold text-indigo-900 mb-6">Case Presentation Structure</h2>
+            <div className="prose prose-lg max-w-none">
+              <pre className="whitespace-pre-wrap bg-gray-50 p-6 rounded-lg text-gray-800 leading-relaxed border-l-4 border-indigo-500">
+                {presentationStructure}
+              </pre>
+            </div>
+            
+            <div className="mt-8 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border-l-4 border-yellow-500">
+              <h3 className="text-2xl font-bold text-yellow-900 mb-4">Quick Tips for Success</h3>
+              <ul className="space-y-3 text-gray-800">
+                <li className="flex items-start">
+                  <span className="font-bold mr-2 text-yellow-700">1.</span>
+                  <span><strong>Practice the opening line</strong> until it flows naturally</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="font-bold mr-2 text-yellow-700">2.</span>
+                  <span><strong>Always present chronologically</strong> - how the illness evolved over time</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="font-bold mr-2 text-yellow-700">3.</span>
+                  <span><strong>Use signposting</strong>: "Moving on to examination findings..."</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="font-bold mr-2 text-yellow-700">4.</span>
+                  <span><strong>Mention relevant negatives</strong>: "No fever, no weight loss"</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="font-bold mr-2 text-yellow-700">5.</span>
+                  <span><strong>Speak confidently</strong> even if unsure - avoid "um" and "uh"</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="font-bold mr-2 text-yellow-700">6.</span>
+                  <span><strong>End with a summary</strong> tying everything together</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="font-bold mr-2 text-yellow-700">7.</span>
+                  <span><strong>Know your differentials</strong> and why each fits or doesn't fit</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
+
+        <footer className="mt-12 text-center text-gray-600">
+          <p className="text-sm">Study this template systematically. Practice with each disease category until presentation becomes automatic.</p>
+          <p className="text-xs mt-2">Based on standard Internal Medicine protocols and clinical examination techniques</p>
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+export default MedicalClerkingGuide;
